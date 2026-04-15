@@ -89,6 +89,7 @@ public class OidcProvider implements SsoProvider<OidcConfigs> {
 
     // Enable state parameter validation
     oidcConfiguration.setWithState(true);
+    oidcConfiguration.setCallUserInfoEndpoint(oidcConfigs.isCallUserInfoEndpoint());
 
     final CustomOidcClient oidcClient = new CustomOidcClient(oidcConfiguration, oidcConfigs);
     oidcClient.setName(OIDC_CLIENT_NAME);

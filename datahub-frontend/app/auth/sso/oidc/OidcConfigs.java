@@ -47,6 +47,8 @@ public class OidcConfigs extends SsoConfigs {
   public static final String OIDC_HTTP_RETRY_ATTEMPTS = "auth.oidc.httpRetryAttempts";
   public static final String OIDC_HTTP_RETRY_DELAY = "auth.oidc.httpRetryDelay";
   public static final String OIDC_ACCESS_DENIED_REDIRECT_URL = "auth.oidc.accessDeniedRedirectUrl";
+  public static final String OIDC_CALL_USER_INFO_ENDPOINT_CONFIG_PATH =
+      "auth.oidc.callUserInfoEndpoint";
 
   /** Default values */
   private static final String DEFAULT_OIDC_USERNAME_CLAIM = "email";
@@ -65,6 +67,7 @@ public class OidcConfigs extends SsoConfigs {
   private static final String DEFAULT_OIDC_CONNECT_TIMEOUT = "1000";
   private static final String DEFAULT_OIDC_HTTP_RETRY_ATTEMPTS = "3";
   private static final String DEFAULT_OIDC_HTTP_RETRY_DELAY = "1000";
+  private static final String DEFAULT_OIDC_CALL_USER_INFO_ENDPOINT = "true";
 
   private final String clientId;
   private final String clientSecret;
@@ -91,6 +94,7 @@ public class OidcConfigs extends SsoConfigs {
   private final String httpRetryAttempts;
   private final String httpRetryDelay;
   private final Optional<String> accessDeniedRedirectUrl;
+  private final boolean callUserInfoEndpoint;
 
   public OidcConfigs(Builder builder) {
     super(builder);
@@ -119,6 +123,7 @@ public class OidcConfigs extends SsoConfigs {
     this.httpRetryAttempts = builder.httpRetryAttempts;
     this.httpRetryDelay = builder.httpRetryDelay;
     this.accessDeniedRedirectUrl = builder.accessDeniedRedirectUrl;
+    this.callUserInfoEndpoint = builder.callUserInfoEndpoint;
   }
 
   public String getHttpRetryAttempts() {
@@ -158,6 +163,8 @@ public class OidcConfigs extends SsoConfigs {
     private String httpRetryAttempts = DEFAULT_OIDC_HTTP_RETRY_ATTEMPTS;
     private String httpRetryDelay = DEFAULT_OIDC_HTTP_RETRY_DELAY;
     private Optional<String> accessDeniedRedirectUrl = Optional.empty();
+    private boolean callUserInfoEndpoint =
+        Boolean.parseBoolean(DEFAULT_OIDC_CALL_USER_INFO_ENDPOINT);
 
     public Builder from(final com.typesafe.config.Config configs) {
       super.from(configs);
@@ -211,6 +218,12 @@ public class OidcConfigs extends SsoConfigs {
           getOptional(configs, OIDC_HTTP_RETRY_ATTEMPTS, DEFAULT_OIDC_HTTP_RETRY_ATTEMPTS);
       httpRetryDelay = getOptional(configs, OIDC_HTTP_RETRY_DELAY, DEFAULT_OIDC_HTTP_RETRY_DELAY);
       accessDeniedRedirectUrl = getOptional(configs, OIDC_ACCESS_DENIED_REDIRECT_URL);
+      callUserInfoEndpoint =
+          Boolean.parseBoolean(
+              getOptional(
+                  configs,
+                  OIDC_CALL_USER_INFO_ENDPOINT_CONFIG_PATH,
+                  DEFAULT_OIDC_CALL_USER_INFO_ENDPOINT));
       return this;
     }
 
@@ -280,6 +293,13 @@ public class OidcConfigs extends SsoConfigs {
 
       grantType = Optional.ofNullable(getOptional(configs, OIDC_GRANT_TYPE, null));
       acrValues = Optional.ofNullable(getOptional(configs, OIDC_ACR_VALUES, null));
+
+      callUserInfoEndpoint =
+          Boolean.parseBoolean(
+              getOptional(
+                  configs,
+                  OIDC_CALL_USER_INFO_ENDPOINT_CONFIG_PATH,
+                  DEFAULT_OIDC_CALL_USER_INFO_ENDPOINT));
 
       return this;
     }
